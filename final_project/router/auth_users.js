@@ -80,6 +80,39 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   return res.status(200).json(books[isbn]);
 });
 
+// Add a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const username = req.session.authorization.username;
+    if (!username)
+    {
+      return res.status(400).json({message: "Error getting username from auth session"});
+    }
+  
+    const isbn = req.params.isbn;
+    if(!isbn)
+    {
+      return res.status(400).json({message: "Please provide an ISBN"});
+    }
+  
+    let new_reviews = {};
+    let reviewers = Object.keys(books[isbn].reviews);
+
+    reviewers.forEach( (reviewer) => {
+        if(reviewer != username)
+        {
+            new_reviews[reviewer] = books[isbn].reviews[reviewer];
+        }
+        else{
+            console.log("Removing review for " + isbn + ": [" + username + "]->[" + books[isbn].reviews[username] + "]");
+        }
+        
+    })
+
+    books[isbn].reviews = new_reviews;
+  
+    return res.status(200).json(books[isbn]);
+  });
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
