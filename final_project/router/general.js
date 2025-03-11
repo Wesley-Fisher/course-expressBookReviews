@@ -25,26 +25,46 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  return res.status(200).json(books);
+public_users.get('/', async function (req, res) {
+    try {
+        await new Promise ((resolve) => {
+            resolve(res.status(200).json(books));
+        });
+        console.log("Promise for task 8-10 [/] completed");
+    } catch (error)
+    {
+        console.log("Error in Promise for task 8-10 [/]: " + error);
+    }
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  const isbn = req.params.isbn;
-  if(!isbn)
-  {
-    return res.status(400).json({message: "Please provide an ISBN"});
-  }
+public_users.get('/isbn/:isbn',async function (req, res) {
 
-  // Hack based on structure of code
-  if (isbn <= 0 || isbn > books.length)
+  async function asGetFromISBN(resolve, reject)
   {
-    return res.status(400).json({message: "ISBN not valid"});
-  }
+    const isbn = req.params.isbn;
+    if(!isbn)
+    {
+        reject(res.status(400).json({message: "Please provide an ISBN"}));
+    }
 
-  let book = books[isbn];
-  return res.status(200).json(book);
+    // Hack based on structure of code
+    if (isbn <= 0 || isbn > books.length)
+    {
+        reject(res.status(400).json({message: "ISBN not valid"}));
+    }
+
+    let book = books[isbn];
+    resolve(res.status(200).json(book));
+  };
+
+  try {
+    await new Promise(asGetFromISBN)
+    console.log("Promise for [get /isbn/:isbn] completed");
+  }
+  catch(error){
+    console.log("Error in [get /isbn/:isbn]: " + error);
+  }
  });
   
 // Get book details based on author
