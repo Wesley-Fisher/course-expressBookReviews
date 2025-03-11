@@ -99,23 +99,34 @@ public_users.get('/author/:author',async function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    if(!title)
+public_users.get('/title/:title', async function (req, res) {
+    async function asGetFromTitle(resolve, reject)
     {
-      return res.status(400).json({message: "Please provide a Title"});
+        const title = req.params.title;
+        if(!title)
+        {
+         reject(res.status(400).json({message: "Please provide a Title"}));
+        }
+
+        let titled_books = [];
+        let keys = Object.keys(books);
+        keys.forEach((key) =>
+        {
+            if (books[key].title === title)
+            {
+                titled_books.push(books[key]);
+            }
+        });
+        resolve(res.status(200).json(titled_books));
     }
 
-    let titled_books = [];
-    let keys = Object.keys(books);
-    keys.forEach((key) =>
-    {
-        if (books[key].title === title)
-        {
-            titled_books.push(books[key]);
-        }
-    });
-  return res.status(200).json(titled_books);
+    try {
+        await new Promise(asGetFromTitle)
+        console.log("Promise for [get /title/:title] completed");
+      }
+      catch(error){
+        console.log("Error in [get /title/:title]: " + error);
+      }
 });
 
 //  Get book review
