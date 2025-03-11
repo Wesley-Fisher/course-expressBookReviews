@@ -1,7 +1,7 @@
 
 // Note: treat key numbers for each book as ISBN value
 let books = {
-      1: {"author": "Chinua Achebe","title": "Things Fall Apart", "reviews": {} },
+      1: {"author": "Chinua Achebe","title": "Things Fall Apart", "reviews": {"Hard-Coded in booksdb.js for Testing": "One review", "Hard-Coded in booksdb.js for Testing 2": "Another Nice Review"} },
       2: {"author": "Hans Christian Andersen","title": "Fairy tales", "reviews": {} },
       3: {"author": "Dante Alighieri","title": "The Divine Comedy", "reviews": {} },
       4: {"author": "Unknown","title": "The Epic Of Gilgamesh", "reviews": {} },
